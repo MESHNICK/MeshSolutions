@@ -1,0 +1,118 @@
+
+
+<?php 
+include("connect.php");
+
+//Get employees
+$get_emp = $conn->prepare("SELECT id,fname,lname,emp_no FROM employees ORDER BY fname ASC");
+$get_emp->execute();
+$rows = $get_emp->FetchAll(PDO::FETCH_ASSOC);
+
+
+
+
+?>
+<style>
+.body{
+	background:#C70039;
+	color:#ffffff;
+	
+}
+#content{
+	background:#581845;
+	color:#ffffff;
+	padding: 10px;
+	margin:10px;
+	border: 2px solid #DAF7A6;
+}
+
+</style>
+<html>
+	<head>
+	<title>XYZ Welcome</title>
+	</head>
+<p><h2>Add New Vehicle</h2></p>
+	<body class="body">
+		<div id="content">		
+		<div id="form_section">
+		
+<form name="form_submit" action="register_vehicle.php" method="POST">	
+
+
+<table>
+  <tr>
+    <td>Number plate:</td>
+    <td><input  name="no_plate"  type="text"/></td>
+  </tr>
+  <tr>
+    <td>Model:</td>
+    <td><input  name="model"  type="text"/></td>
+  </tr>
+  <tr>
+    <td>Year of Purchase:</td>
+    <td><input  name="yop"  type="text"/></td>
+  </tr>
+  <tr>
+    <td>Vehicle Cost:</td>
+    <td><input  name="vehicle_cost"  type="text"/></td>
+  </tr>
+  <tr>
+  <td>Employment Number</td>
+  <td><select name="emp_id">
+  
+  
+   <option value=""> --Select Employee-- </option>
+   <?php
+   foreach($rows as $row){
+	   
+	echo '<option value="'.$row['id'].'">'.$row['fname'].'--'.$row['lname'].'--'.$row['emp_no'].'</option>';
+	//echo "<option value='".$row['id']."'>".$row['fname']'--'.$row['lname'].'</option>';
+   }
+   ?>
+   
+
+   </select> </td>
+  </tr>
+  <tr>
+  <td></td>
+   <td><input type="submit" name="save" value="Save"></td>
+  </tr>
+</table>
+</form>
+<?php
+
+
+if(isset($_POST['save'])){
+$num_plate = $_POST['no_plate'];	
+$model = $_POST['model'];
+$year= $_POST['yop'];
+$cost = $_POST['vehicle_cost'];	
+$employee = $_POST['emp_id'];
+//Validation
+
+	
+	
+//Save record/data
+$save = $conn->prepare("INSERT vehicles(no_plate,model,yop,vehicle_cost,emp_id)VALUES('$num_plate','$model','$year','$cost','$employee')");
+$save->execute();
+
+if($save){
+	
+echo "Record saved";
+	
+}else{
+echo "Error saving record";		
+	
+}
+	
+}
+?>
+
+    </div>
+		
+		<div>&copy </div>
+		</div>
+
+	</body>
+
+</html>
